@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaPlus, FaTrash, FaLock, FaUnlock } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../api';
 
 const Projects = () => {
   const [filter, setFilter] = useState('All');
@@ -20,7 +20,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get('/api/projects');
+      const { data } = await api.get('/api/projects');
       if (data && data.dbOffline) throw new Error('Offline');
       setProjectsList(data);
     } catch (error) {
@@ -45,7 +45,7 @@ const Projects = () => {
         techStack: newProject.techStack.split(',').map(s => s.trim())
       };
       try {
-        const res = await axios.post('/api/projects', projectToSave);
+        const res = await api.post('/api/projects', projectToSave);
         if (res.data && res.data.dbOffline) throw new Error('Offline');
       } catch (error) {
         console.warn('Backend unavailable. Simulating project addition locally.', error.message);
@@ -77,7 +77,7 @@ const Projects = () => {
       }
 
       try {
-        const res = await axios.delete(`/api/projects/${id}`);
+        const res = await api.delete(`/api/projects/${id}`);
         if (res.data && res.data.dbOffline) throw new Error('Offline');
         fetchProjects();
       } catch (error) {
